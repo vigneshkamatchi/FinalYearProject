@@ -16,21 +16,21 @@ class _FetchDataState extends State<FetchData> {
   @override
   void initState() {
     super.initState();
-    reference = FirebaseDatabase.instance.reference().child('Students');
+    reference = FirebaseDatabase.instance.reference().child('Sensors');
   }
 
-  Widget listItem({required Map student}) {
+  Widget listItem(Map<dynamic, dynamic> Sensors) {
     return Dismissible(
-      key: Key(student['key']),
+      key: Key(Sensors['key']),
       direction: DismissDirection.horizontal,
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => UpdateRecord(studentKey: student['key'])),
+            MaterialPageRoute(builder: (_) => UpdateRecord(SensorsKey: Sensors['key'])),
           );
         } else if (direction == DismissDirection.endToStart) {
-          reference.child(student['key']).remove();
+          reference.child(Sensors['key']).remove();
         }
       },
       background: Container(
@@ -50,19 +50,27 @@ class _FetchDataState extends State<FetchData> {
         padding: const EdgeInsets.all(10),
         height: 110,
         color: Colors.amberAccent,
+        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              student['name'],
+              'Total Usage of current: ${Sensors['Current']}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
             const SizedBox(
               height: 5,
             ),
             Text(
-              student['password'],
+              'Total Liters of water Usage: ${Sensors['Total Liters']}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              'Total Voltage Usage: ${Sensors['Voltage']}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             ),
           ],
@@ -82,9 +90,9 @@ class _FetchDataState extends State<FetchData> {
         child: FirebaseAnimatedList(
           query: reference,
           itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
-            Map student = snapshot.value as Map;
-            student['key'] = snapshot.key;
-            return listItem(student: student);
+            Map<dynamic, dynamic> Sensors = snapshot.value as Map<dynamic, dynamic>;
+            Sensors['key'] = snapshot.key;
+            return listItem(Sensors);
           },
         ),
       ),
