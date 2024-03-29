@@ -2,34 +2,38 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class UpdateRecord extends StatefulWidget {
-  const UpdateRecord({Key? key, required this.studentKey}) : super(key: key);
+  const UpdateRecord({Key? key, required this.SensorsKey}) : super(key: key);
 
-  final String studentKey;
+  final String SensorsKey;
 
   @override
   State<UpdateRecord> createState() => _UpdateRecordState();
 }
 
 class _UpdateRecordState extends State<UpdateRecord> {
-  final userNameController = TextEditingController();
-  final userPasswordController = TextEditingController(); // Added for password
+  final currentController = TextEditingController();
+  final totalLitersController = TextEditingController();
+  final voltageController = TextEditingController();
 
   late DatabaseReference dbRef;
 
   @override
   void initState() {
     super.initState();
-    dbRef = FirebaseDatabase.instance.reference().child('Students').child(widget.studentKey);
-    getStudentData();
+    dbRef = FirebaseDatabase.instance.reference().child('Sensors').child(widget.SensorsKey);
+    getSensorsData();
   }
 
-  void getStudentData() async {
-    DataSnapshot snapshot = await dbRef.get();
+  void getSensorsData() async {
+    DataSnapshot snapshot = (await dbRef.once()) as DataSnapshot;
 
     if (snapshot.value != null) {
-      Map student = snapshot.value as Map;
-      userNameController.text = student['name'];
-      userPasswordController.text = student['password']; // Set password
+      Map<dynamic, dynamic> sensors = snapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        currentController.text = (sensors['Current'] ?? '').toString();
+        totalLitersController.text = (sensors['Total Liters'] ?? '').toString();
+        voltageController.text = (sensors['Voltage'] ?? '').toString();
+      });
     }
   }
 
@@ -44,18 +48,26 @@ class _UpdateRecordState extends State<UpdateRecord> {
         child: Column(
           children: [
             TextField(
-              controller: userNameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              controller: currentController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Total Usage of current:'),
             ),
             TextField(
-              controller: userPasswordController, // Use password controller
-              decoration: const InputDecoration(labelText: 'Password'), // Change label
+              controller: totalLitersController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Total Liters of water Usage:'),
+            ),
+            TextField(
+              controller: voltageController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Total Voltage Usage:'),
             ),
             ElevatedButton(
               onPressed: () {
                 dbRef.update({
-                  'name': userNameController.text,
-                  'password': userPasswordController.text, // Update password
+                  'Current': int.tryParse(currentController.text) ?? 0,
+                  'Total Liters': int.tryParse(totalLitersController.text) ?? 0,
+                  'Voltage': int.tryParse(voltageController.text) ?? 0,
                 });
                 Navigator.pop(context);
               },
