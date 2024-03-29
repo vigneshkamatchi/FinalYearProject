@@ -18,7 +18,7 @@ class _InsertDataState extends State<InsertData> {
   @override
   void initState() {
     super.initState();
-    dbRef = FirebaseDatabase.instance.reference().child('Students');
+    dbRef = FirebaseDatabase.instance.reference().child('Sensors');
   }
 
   @override
@@ -75,16 +75,16 @@ class _InsertDataState extends State<InsertData> {
                 onPressed: () {
                   if (userNameController.text.isNotEmpty &&
                       passwordController.text.isNotEmpty) {
-                    Map<String, dynamic> Students = {
+                    Map<String, dynamic> Sensors = {
                       'name': userNameController.text,
                       'password': passwordController.text,
                     };
 
-                    dbRef.push().set(Students).then((_) {
+                    dbRef.push().set(Sensors).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Data inserted successfully'),
-                          duration: Duration(seconds: 2),
+                          duration: Duration(seconds: 3),
                         ),
                       );
                       userNameController.clear();
