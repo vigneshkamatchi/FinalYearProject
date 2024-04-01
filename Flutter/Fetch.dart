@@ -1,10 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:my_flutter_project/utils/color_utils.dart';
 import 'package:my_flutter_project/screens/update_record.dart';
 
 class FetchData extends StatefulWidget {
-  const FetchData({Key? key}) : super(key: key);
+  const FetchData({Key? key,}) : super(key: key);
 
   @override
   State<FetchData> createState() => _FetchDataState();
@@ -37,13 +38,13 @@ class _FetchDataState extends State<FetchData> {
         color: Colors.green,
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 20.0),
-        child: Icon(Icons.edit, color: Colors.white),
+        child: Icon(Icons.edit, color: const Color.fromRGBO(149, 70, 196, 1)),
       ),
       secondaryBackground: Container(
         color: Colors.red,
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20.0),
-        child: Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: const Color.fromRGBO(149, 70, 196, 1)),
       ),
       child: Container(
         margin: const EdgeInsets.all(10),
@@ -86,6 +87,13 @@ class _FetchDataState extends State<FetchData> {
         title: const Text('Fetching data'),
       ),
       body: Container(
+        
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+          hexStringToColor("CB2B93"),
+          hexStringToColor("9546C4"),
+          hexStringToColor("5E61F4")
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         height: double.infinity,
         child: FirebaseAnimatedList(
           query: reference,
@@ -98,4 +106,6 @@ class _FetchDataState extends State<FetchData> {
       ),
     );
   }
+
+  
 }
